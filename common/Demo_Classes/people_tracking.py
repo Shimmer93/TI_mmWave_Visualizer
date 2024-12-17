@@ -60,12 +60,16 @@ class PeopleTracking(Plot3D, Plot1D):
         fallDetectionOptionsBox = self.initFallDetectPane()
         gridLayout.addWidget(fallDetectionOptionsBox, 4,0,1,1)
 
+        fallDetResultBox = self.initFallDetectResultPane()
+        gridLayout.addWidget(fallDetResultBox, 5,0,1,1)
+
         demoTabs.addTab(self.plot_3d, '3D Plot')
         demoTabs.addTab(self.rangePlot, 'Range Plot')
         self.device = device
         self.tabs = demoTabs
 
     def updateGraph(self, outputDict):
+        fall_detected = False
         self.plotStart = int(round(time.time()*1000))
         self.updatePointCloud(outputDict)
 
@@ -135,6 +139,7 @@ class PeopleTracking(Plot3D, Plot1D):
                                     fallDetectionDisplayResults = self.fallDetection.step(outputDict['heightData'], outputDict['trackData'])
                                     if (fallDetectionDisplayResults[tid] > 0): 
                                         height_str = height_str + " FALL DETECTED"
+                                        fall_detected = True
                                 self.coordStr[tid].setText(height_str)
                                 self.coordStr[tid].setX(track[1])
                                 self.coordStr[tid].setY(track[2])
@@ -155,6 +160,14 @@ class PeopleTracking(Plot3D, Plot1D):
 
         if ('frameNum' in outputDict):
             self.frameNumDisplay.setText('Frame: ' + str(outputDict['frameNum']))
+
+        if fall_detected:
+            self.fallDetResultLabel.setText("Fall Detected")
+            self.fallDetResultLabel.setStyleSheet('color: red; font-size: 72px; font-weight: bold')
+        else:
+            self.fallDetResultLabel.setText("No Fall Detected")
+            self.fallDetResultLabel.setStyleSheet('color: black; font-size: 72px; font-weight: normal')
+            
 
     def graphDone(self, outputDict):
         if ('frameNum' in outputDict):
@@ -219,8 +232,10 @@ class PeopleTracking(Plot3D, Plot1D):
     def fallDetDisplayChanged(self, state):
         if state:
             self.fallDetectionOptionsBox.setVisible(True)
+            self.fallDetResultBox.setVisible(True)
         else:
             self.fallDetectionOptionsBox.setVisible(False)
+            self.fallDetResultBox.setVisible(False)
 
     def updateFallDetectionSensitivity(self):
         self.fallDetection.setFallSensitivity(((self.fallDetSlider.value() / self.fallDetSlider.maximum()) * 0.4) + 0.4) # Range from 0.4 to 0.8
@@ -247,6 +262,21 @@ class PeopleTracking(Plot3D, Plot1D):
             self.fallDetectionOptionsBox.setVisible(False)
 
         return self.fallDetectionOptionsBox
+    
+    def initFallDetectResultPane(self):
+        self.fallDetResultBox = QGroupBox('Fall Detection Result')
+        self.fallDetLayout = QGridLayout()
+        self.fallDetResultLabel = QLabel("No Fall Detected")
+        self.fallDetResultLabel.setFont(QFont('Arial', 72))
+        self.fallDetResultLabel.setStyleSheet('color: black; font-size: 72px; font-weight: normal')
+        self.fallDetLayout.addWidget(self.fallDetResultLabel,0,0,1,1)
+        self.fallDetResultBox.setLayout(self.fallDetLayout)
+        if(self.displayFallDet.checkState() == 2):
+            self.fallDetResultBox.setVisible(True)
+        else:
+            self.fallDetResultBox.setVisible(False)
+
+        return self.fallDetResultBox
 
     def parseTrackingCfg(self, args):
         self.maxTracks = int(args[4])
