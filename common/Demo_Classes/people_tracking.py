@@ -83,7 +83,7 @@ class PeopleTracking(Plot3D, Plot1D):
                 if(len(self.previousClouds[frame]) > 0):
                     # if it's the first member, assign it equal
                     if(self.cumulativeCloud is None):
-                        self.cumulativeCloud = self.previousClouds[frame]
+                        self.cumulativeCloud = np.array(self.previousClouds[frame])
                     # if it's not the first member, concatinate it
                     else:
                         self.cumulativeCloud = np.concatenate((self.cumulativeCloud, self.previousClouds[frame]),axis=0)
@@ -94,7 +94,7 @@ class PeopleTracking(Plot3D, Plot1D):
                 if(len(self.previousClouds[frame]) > 0):
                     # if it's the first member, assign it equal
                     if(self.cumulativeCloud is None):
-                        self.cumulativeCloud = self.previousClouds[frame]
+                        self.cumulativeCloud = np.array(self.previousClouds[frame])
                     # if it's not the first member, concatinate it
                     else:
                         self.cumulativeCloud = np.concatenate((self.cumulativeCloud, self.previousClouds[frame]),axis=0)
@@ -112,7 +112,7 @@ class PeopleTracking(Plot3D, Plot1D):
         # Plot
         if (self.tabs.currentWidget() == self.plot_3d):
             if ('trackData' in outputDict):
-                tracks = outputDict['trackData']
+                tracks = np.array(outputDict['trackData'])
                 for i in range(outputDict['numDetectedTracks']):
                     rotX, rotY, rotZ = eulerRot(tracks[i,1], tracks[i,2], tracks[i,3], self.elev_tilt, self.az_tilt)
                     tracks[i,1] = rotX
