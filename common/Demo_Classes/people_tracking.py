@@ -165,7 +165,7 @@ class PeopleTracking(Plot3D, Plot1D):
             self.fallDetResultLabel.setText("Fall Detected")
             self.fallDetResultLabel.setStyleSheet('color: red; font-size: 72px; font-weight: bold')
         else:
-            self.fallDetResultLabel.setText("No Fall Detected")
+            self.fallDetResultLabel.setText("No Fall")
             self.fallDetResultLabel.setStyleSheet('color: black; font-size: 72px; font-weight: normal')
             
 
@@ -266,7 +266,7 @@ class PeopleTracking(Plot3D, Plot1D):
     def initFallDetectResultPane(self):
         self.fallDetResultBox = QGroupBox('Fall Detection Result')
         self.fallDetLayout = QGridLayout()
-        self.fallDetResultLabel = QLabel("No Fall Detected")
+        self.fallDetResultLabel = QLabel("No Fall")
         self.fallDetResultLabel.setFont(QFont('Arial', 72))
         self.fallDetResultLabel.setStyleSheet('color: black; font-size: 72px; font-weight: normal')
         self.fallDetLayout.addWidget(self.fallDetResultLabel,0,0,1,1)
